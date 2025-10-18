@@ -183,7 +183,7 @@
             const displayUrl = data.url.replace(/^https?:\/\/(www\.)?/, '');
 
             newRow.innerHTML = `
-                <td class="table-cell">${createLink(data.email, `mailto:${data.email}`)}</td>
+                <td class="table-cell">${createLink(data.email, data.email)}</td>
                 <td class="table-cell">${createLink(displayUrl, data.url)}</td>
                 <td class="table-cell">${data.country}</td>
                 <td class="table-cell">${data.joinDate}</td>
@@ -206,7 +206,11 @@
         function createLink(text, url) {
             if (!text) return '';
             const cleanText = text;
-            const cleanUrl = url;
+            let cleanUrl = url;
+            // Ensure the URL is absolute to prevent incorrect relative linking on GitHub Pages
+            if (cleanUrl && !cleanUrl.startsWith('http') && !cleanUrl.startsWith('mailto:')) {
+                cleanUrl = 'https://' + cleanUrl;
+            }
             return `<a href="${cleanUrl}" target="_blank" class="text-indigo-600 hover:underline hover:text-indigo-800 break-all">${cleanText}</a>`;
         }
 
