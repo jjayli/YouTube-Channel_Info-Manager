@@ -34,7 +34,8 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
 💻 소스 코드 (Source Code)
 
 이 도구는 단일 HTML 파일로 이루어져 있습니다. 아래 코드를 복사하여 index.html 파일로 저장하면 바로 사용할 수 있습니다.
-
+<details>
+<summary>▶︎ index.html 코드 보기</summary>
 
 <!DOCTYPE html>
 <html lang="ko">
