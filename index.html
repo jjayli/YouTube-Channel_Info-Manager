@@ -37,6 +37,9 @@
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -51,13 +54,16 @@
             <!-- 입력 섹션 -->
             <div class="bg-white p-6 rounded-lg shadow-md mb-8">
                 <label for="channel-data" class="block text-sm font-medium text-gray-700 mb-2">채널 정보 붙여넣기:</label>
-                <textarea id="channel-data" rows="8" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="예: bgmpraiseandworship@gmail.com..."></textarea>
+                <textarea id="channel-data" rows="8" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="예: contact@example.com..."></textarea>
                 <div class="mt-4 flex flex-col sm:flex-row gap-4">
                     <button onclick="parseAndAddChannel()" class="w-full sm:w-auto bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition duration-300">
                         채널 추가하기
                     </button>
                     <button id="export-csv" onclick="exportToCSV()" class="w-full sm:w-auto bg-green-600 text-white font-bold py-2 px-6 rounded-md hover:bg-green-700 transition duration-300 hidden">
                         CSV로 내보내기
+                    </button>
+                    <button id="clear-all-btn" onclick="openClearAllModal()" class="w-full sm:w-auto bg-red-600 text-white font-bold py-2 px-6 rounded-md hover:bg-red-700 transition duration-300 hidden">
+                        전체 삭제
                     </button>
                 </div>
             </div>
@@ -74,34 +80,46 @@
                             <th class="table-cell">구독자</th>
                             <th class="table-cell">동영상 수</th>
                             <th class="table-cell">총 조회수</th>
-                            <th class="table-cell">협조 이메일 발송</th>
+                            <th class="table-cell">메일 발송</th>
                             <th class="table-cell">채널 내용</th>
                             <th class="table-cell">기타</th>
+                            <th class="table-cell">삭제</th>
                         </tr>
                     </thead>
                     <tbody id="channel-table-body">
                         <!-- 채널 데이터가 여기에 추가됩니다 -->
                     </tbody>
                 </table>
-                <p id="empty-table-message" class="p-8 text-center text-gray-500">아직 추가된 채널이 없습니다. 위 칸에 정보를 붙여넣고 '채널 추가하기' 버튼을 눌러주세요.</p>
+                <p id="empty-table-message" class="p-8 text-center text-gray-500">아직 추가된 채널이 없습니다.</p>
             </div>
         </main>
     </div>
+    
+    <!-- 전체 삭제 확인 모달 -->
+    <div id="clear-all-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 modal-overlay hidden" style="opacity: 0;">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">전체 삭제 확인</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">정말로 모든 채널 정보를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+                </div>
+                <div class="items-center px-4 py-3 flex justify-center gap-4">
+                    <button id="confirm-clear-btn" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        삭제
+                    </button>
+                    <button id="cancel-clear-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-24 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        취소
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
-        // 페이지 로드 시 예시 데이터 추가
-        window.onload = function() {
-            const initialData = `bgmpraiseandworship@gmail.com
-                                [www.youtube.com/@SoraTori](https://www.youtube.com/@SoraTori)
-                                일본
-                                가입일: 2019. 2. 7.
-                                구독자 9.02만명
-                                동영상 1,852개
-                                조회수 24,838,111회`;
-            document.getElementById('channel-data').value = initialData;
-            parseAndAddChannel();
-        };
-        
         function parseAndAddChannel() {
             const text = document.getElementById('channel-data').value.trim();
             if (!text) {
@@ -112,22 +130,18 @@
             const lines = text.split('\n').map(line => line.trim()).filter(line => line);
             
             const data = {
-                email: '',
-                url: '',
-                country: '정보 없음',
-                joinDate: '',
-                subscribers: '',
-                videos: '',
-                views: ''
+                email: '', url: '', country: '정보 없음', joinDate: '',
+                subscribers: '', videos: '', views: ''
             };
-
             const unassigned = [];
 
             lines.forEach(line => {
-                if (line.includes('@') && !data.email) {
-                    data.email = line;
+                const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+                if (emailRegex.test(line) && !data.email) {
+                    data.email = line.match(emailRegex)[0];
                 } else if (line.includes('[youtube.com/](https://youtube.com/)')) {
-                    data.url = line;
+                    const urlMatch = line.match(/https?:\/\/[^\s)]+/);
+                    data.url = urlMatch ? urlMatch[0] : line;
                 } else if (line.startsWith('가입일:')) {
                     data.joinDate = line.replace('가입일:', '').trim();
                 } else if (line.startsWith('구독자')) {
@@ -141,9 +155,9 @@
                 }
             });
 
-            // 키워드가 없는 '국가' 정보 처리
             if (unassigned.length > 0) {
-                data.country = unassigned[0];
+                const countryCandidate = unassigned.find(item => !item.includes('www.') && !item.includes('@'));
+                if (countryCandidate) data.country = countryCandidate;
             }
             
             addChannelToTable(data);
@@ -152,12 +166,13 @@
 
         function addChannelToTable(data) {
             const tableBody = document.getElementById('channel-table-body');
-            const newRow = tableBody.insertRow(0); // 맨 위에 추가
+            const newRow = tableBody.insertRow(0);
             newRow.className = 'fade-in';
+            const displayUrl = data.url.replace(/^https?:\/\/(www\.)?/, '');
 
             newRow.innerHTML = `
                 <td class="table-cell">${createLink(data.email, `mailto:${data.email}`)}</td>
-                <td class="table-cell">${createLink(data.url, `https://${data.url}`)}</td>
+                <td class="table-cell">${createLink(displayUrl, data.url)}</td>
                 <td class="table-cell">${data.country}</td>
                 <td class="table-cell">${data.joinDate}</td>
                 <td class="table-cell">${data.subscribers}</td>
@@ -166,29 +181,70 @@
                 <td class="table-cell text-center"><input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"></td>
                 <td class="table-cell editable-cell" contenteditable="true"></td>
                 <td class="table-cell editable-cell" contenteditable="true"></td>
+                <td class="table-cell text-center">
+                    <button onclick="deleteRow(this)" class="text-gray-400 hover:text-red-600 font-bold text-xl px-2 py-1 transition-colors">&times;</button>
+                </td>
             `;
-
-            document.getElementById('empty-table-message').style.display = 'none';
-            document.getElementById('export-csv').classList.remove('hidden');
+            updateTableVisibility();
         }
         
         function createLink(text, url) {
             if (!text) return '';
-            return `<a href="${url}" target="_blank" class="text-blue-600 hover:underline hover:text-blue-800 break-all">${text}</a>`;
+            const cleanText = text.replace(/\[([^\]]+)\]\([^\)]+\)/, '$1');
+            const cleanUrl = url.replace(/\[([^\]]+)\]\(([^\)]+)\)/, '$2');
+            return `<a href="${cleanUrl}" target="_blank" class="text-blue-600 hover:underline hover:text-blue-800 break-all">${cleanText}</a>`;
         }
+
+        function deleteRow(buttonEl) {
+            const row = buttonEl.closest('tr');
+            row.remove();
+            updateTableVisibility();
+        }
+
+        function updateTableVisibility() {
+            const tableBody = document.getElementById('channel-table-body');
+            const isEmpty = tableBody.rows.length === 0;
+            document.getElementById('empty-table-message').style.display = isEmpty ? 'block' : 'none';
+            document.getElementById('export-csv').style.display = isEmpty ? 'none' : 'inline-block';
+            document.getElementById('clear-all-btn').style.display = isEmpty ? 'none' : 'inline-block';
+        }
+
+        function openClearAllModal() {
+            const modal = document.getElementById('clear-all-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.style.opacity = 1, 10);
+        }
+
+        function closeClearAllModal() {
+            const modal = document.getElementById('clear-all-modal');
+            modal.style.opacity = 0;
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+        
+        document.getElementById('confirm-clear-btn').addEventListener('click', () => {
+            document.getElementById('channel-table-body').innerHTML = '';
+            updateTableVisibility();
+            closeClearAllModal();
+        });
+        
+        document.getElementById('cancel-clear-btn').addEventListener('click', closeClearAllModal);
+        document.getElementById('clear-all-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'clear-all-modal') {
+                closeClearAllModal();
+            }
+        });
 
         function exportToCSV() {
             const headers = ["이메일", "채널 URL", "국가", "가입일", "구독자", "동영상 수", "총 조회수", "협조 이메일 발송", "채널 내용", "기타"];
             const table = document.querySelector("table");
-            let csv = [];
-            csv.push(headers.join(','));
+            let csv = [headers.join(',')];
 
             for (let i = 1; i < table.rows.length; i++) {
                 const row = [];
                 const cols = table.rows[i].cells;
                 
                 row.push(`"${cols[0].innerText}"`);
-                row.push(`"${cols[1].innerText}"`);
+                row.push(`"${cols[1].querySelector('a') ? cols[1].querySelector('a').href : cols[1].innerText}"`);
                 row.push(`"${cols[2].innerText}"`);
                 row.push(`"${cols[3].innerText}"`);
                 row.push(`"${cols[4].innerText}"`);
