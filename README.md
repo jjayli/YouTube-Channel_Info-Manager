@@ -1,5 +1,3 @@
-
-
 YouTube 채널 자동 관리 시트 (YouTube Channel Manager)
 
 단순 복사/붙여넣기만으로 유튜브 채널 정보를 자동으로 표로 정리해주는 간단한 웹 애플리케이션입니다. 별도의 설치 없이 HTML 파일 하나만으로 동작하며, 여러 채널을 리스트업하고 관리하는 데 도움을 줍니다.
@@ -9,7 +7,7 @@ YouTube 채널 자동 관리 시트 (YouTube Channel Manager)
 
 자동 파싱: 유튜브 채널의 '정보' 탭에서 복사한 텍스트를 붙여넣으면 이메일, 구독자 수, 조회수 등을 자동으로 인식하여 표에 채워줍니다.
 
-데이터 관리: 협조 메일 발송 여부를 체크하고, 각 채널에 대한 메모를 자유롭게 추가할 수 있습니다.
+데이터 관리: 협조 메일 발송 여부를 체크하고, 각 채널에 대한 메모나 사용 가능 여부를 자유롭게 추가할 수 있습니다.
 
 개별/전체 삭제: 각 채널 정보를 개별적으로 삭제하거나, 목록 전체를 한 번에 삭제할 수 있습니다.
 
@@ -34,6 +32,7 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
 💻 소스 코드 (Source Code)
 
 이 도구는 단일 HTML 파일로 이루어져 있습니다. 아래 코드를 복사하여 index.html 파일로 저장하면 바로 사용할 수 있습니다.
+
 <details>
 <summary>▶︎ index.html 코드 보기</summary>
 
@@ -43,8 +42,8 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube 채널 관리 시트</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link href="[https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap)" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
@@ -104,15 +103,15 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
                 <textarea id="channel-data" rows="8" class="w-full p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="이곳에 유튜브 채널 정보 페이지의 텍스트를 붙여넣으세요..."></textarea>
                 <div class="mt-4 flex flex-wrap gap-3">
                     <button onclick="parseAndAddChannel()" class="flex items-center justify-center flex-grow sm:flex-grow-0 bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-sm">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         채널 추가
                     </button>
                     <button id="export-csv" onclick="exportToCSV()" class="flex items-center justify-center flex-grow sm:flex-grow-0 bg-emerald-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-emerald-700 transition duration-300 shadow-sm hidden">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         CSV 내보내기
                     </button>
                     <button id="clear-all-btn" onclick="openClearAllModal()" class="flex items-center justify-center flex-grow sm:flex-grow-0 bg-rose-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-rose-700 transition duration-300 shadow-sm hidden">
-                       <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                       <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         전체 삭제
                     </button>
                 </div>
@@ -130,6 +129,7 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
                             <th class="table-cell">구독자</th>
                             <th class="table-cell">동영상 수</th>
                             <th class="table-cell">총 조회수</th>
+                            <th class="table-cell">사용가능 여부</th>
                             <th class="table-cell text-center">메일 발송</th>
                             <th class="table-cell">채널 내용</th>
                             <th class="table-cell">기타</th>
@@ -150,7 +150,7 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
                 <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">전체 삭제 확인</h3>
                 <div class="mt-2 px-7 py-3">
@@ -189,7 +189,7 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
                 const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
                 if (emailRegex.test(line) && !data.email) {
                     data.email = line.match(emailRegex)[0];
-                } else if (line.includes('youtube.com/')) {
+                } else if (line.includes('[youtube.com/](https://youtube.com/)')) {
                     const urlMatch = line.match(/https?:\/\/[^\s)]+/);
                     data.url = urlMatch ? urlMatch[0] : line;
                 } else if (line.startsWith('가입일:')) {
@@ -228,12 +228,13 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
                 <td class="table-cell">${data.subscribers}</td>
                 <td class="table-cell">${data.videos}</td>
                 <td class="table-cell">${data.views}</td>
+                <td class="table-cell editable-cell" contenteditable="true"></td>
                 <td class="table-cell text-center"><input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"></td>
                 <td class="table-cell editable-cell" contenteditable="true"></td>
                 <td class="table-cell editable-cell" contenteditable="true"></td>
                 <td class="table-cell text-center">
                     <button onclick="deleteRow(this)" class="text-slate-400 hover:text-rose-600 p-2 rounded-full transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd"></path></svg>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd"></path></svg>
                     </button>
                 </td>
             `;
@@ -291,7 +292,7 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
         });
 
         function exportToCSV() {
-            const headers = ["이메일", "채널 URL", "국가", "가입일", "구독자", "동영상 수", "총 조회수", "메일 발송", "채널 내용", "기타"];
+            const headers = ["이메일", "채널 URL", "국가", "가입일", "구독자", "동영상 수", "총 조회수", "사용가능 여부", "메일 발송", "채널 내용", "기타"];
             const table = document.querySelector("table");
             let csv = [headers.join(',')];
 
@@ -308,9 +309,10 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
                 rowData.push(`"${cols[4].innerText}"`);
                 rowData.push(`"${cols[5].innerText}"`);
                 rowData.push(`"${cols[6].innerText}"`);
-                rowData.push(cols[7].querySelector('input[type="checkbox"]').checked ? '"발송 완료"' : '"미발송"');
-                rowData.push(`"${cols[8].innerText.replace(/"/g, '""')}"`);
+                rowData.push(`"${cols[7].innerText.replace(/"/g, '""')}"`); // 사용가능 여부
+                rowData.push(cols[8].querySelector('input[type="checkbox"]').checked ? '"발송 완료"' : '"미발송"');
                 rowData.push(`"${cols[9].innerText.replace(/"/g, '""')}"`);
+                rowData.push(`"${cols[10].innerText.replace(/"/g, '""')}"`);
                 
                 csv.push(rowData.join(','));
             });
@@ -328,11 +330,3 @@ CSV 내보내기: 정리된 모든 데이터를 CSV 파일로 한 번에 다운�
 
 </body>
 </html>
-
-
-
-</details>
-
-📜 라이선스 (License)
-
-이 프로젝트는 MIT 라이선스를 따릅니다. 자유롭게 수정하고 배포할 수 있습니다.****
